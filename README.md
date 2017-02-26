@@ -1,7 +1,9 @@
 simple_php_yenc_decode
 ======================
 
-Basic yEnc decoder extension for PHP5 written in c++ using swig.
+Basic yEnc decoder extension for PHP5 written in c++ using swig, with install script for use with Docker image php:5.
+
+This is a work in progress and is not yet recommended for use.
 
 ### Intro:
 
@@ -21,64 +23,13 @@ On ubuntu:
 libboost-regex-dev
 (depends on libboost-regex and libboost-dev)
 
-### Compilation:
-
-On Ubuntu you can run sh ubuntu.sh
-
-On Arch Linux, sh arch.sh
-
-For other operating systems you can follow these instructions:
-
-Swig is not required, since I offer the swig output files with the source, but
-if you want to create the swig output files, I used swig 2.0, this was the command:
-
-`swig -php -c++ yenc_decode.i`
-
-For the rest, only boost regex is required, my g++ is 4.8.2 for reference and boost regex is 1.55 (successful on 1.53 and 1.54):
-
-``g++ `php-config5 --includes` -fpic -c yenc_decode_wrap.cpp``
-
-`g++ -fpic -c yenc_decode.cpp -lboost_regex`
-
-Change this last line based on your OS (.dll instead of .so for windows for example).
-
-`g++ -shared *.o -o simple_php_yenc_decode.so -lboost_regex`
-
----
-If you get this error:  
-``/usr/bin/ld: yenc_decode_wrap.o: relocation R_X86_64_32S against `.rodata' can not be used when making a shared object; recompile with -fPIC``
-
-Run this command:  
-`export CXX=”g++ -fPIC”`
-
-And rerun the 3 compilation commands above.
-
 ### Installation:
 
-After compiling you end up with a .so or .dll file.
+Run the following command:
 
-My php.ini didn't have a default "extensions" dir,
+`sh install.sh`
 
-I created a extensions folder in /usr/lib/php5 and put the so file in there.
-
-The location does not matter - I'm mentioning it so you can have an example of a place to put the extension.
-
-Next you need to edit php.ini, the CLI one, since we only use yEnc decoding in CLI on nZEDb.
-
-On ubuntu the CLI php.ini is here: /etc/php5/cli/php.ini
-
-In the Dynamic Extensions part of the ini, add the extension:
-
-(At this point you have 2 choices, you can set the default location where extensions are loaded
-to the folder we created above, or you can load the full path to the extension.)
-
-This is the full path (if you did not set the default extension path):
-
-extension=/usr/lib/php5/extensions/simple_php_yenc_decode.so
-
-If you set the default extension path:
-
-extension=simple_php_yenc_decode.so
+This command compiles simple_php_yenc_decode.so, adds it to the php extension dir which can be found with `php-config --extension-dir`, and enables the extension with `docker-php-ext-enable simple_php_yenc_decode`.
 
 ### Example:
 
